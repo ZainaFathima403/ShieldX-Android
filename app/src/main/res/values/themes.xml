@@ -1,0 +1,25 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.ShieldX" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowBackground">@color/bg</item>
+        <item name="colorPrimary">@color/accent</item>
+        <item name="colorPrimaryDark">@color/bg</item>
+        <item name="colorAccent">@color/accent2</item>
+        <item name="android:statusBarColor">@color/bg</item>
+        <item name="android:textColorPrimary">@color/text</item>
+    </style>
+
+    <!-- Used by ScanActivity so the warning appears as a compact overlay above
+         whatever app (WhatsApp, SMS, Mail, Chrome...) the link/text came from,
+         instead of taking over the full screen like a normal app launch.
+         NOTE: this must NOT extend a "...Dialog" parent theme — AppCompat throws
+         if a Dialog-based theme also sets windowIsFloating=false, which is exactly
+         what we need for this activity to sit as a regular (non-dialog) window
+         with a transparent background instead. -->
+    <style name="Theme.ShieldX.Dialog" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="colorPrimary">@color/accent</item>
+        <item name="colorAccent">@color/accent2</item>
+    </style>
+</resources>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
+
+    <!-- Needed on Android 11+ to be allowed to see/launch other browser apps
+         when the user chooses "Proceed Anyway" on a scanned link. -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="https" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="http" />
+        </intent>
+        <!-- Explicit visibility for common browsers, so ShieldX can launch one of them
+             directly by package name if needed, bypassing Android's default-app resolution
+             (which can otherwise treat ShieldX as the only "valid" handler for a link once
+             it's been set as the default, leaving nothing else to fall back to). -->
+        <package android:name="com.android.chrome" />
+        <package android:name="com.sec.android.app.sbrowser" />
+        <package android:name="org.mozilla.firefox" />
+        <package android:name="com.microsoft.emmx" />
+        <package android:name="com.opera.browser" />
+        <package android:name="com.brave.browser" />
+    </queries>
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/Theme.ShieldX"
+        android:supportsRtl="true">
+
+        <!-- Main / launcher screen: dashboard + "set as default link handler" instructions -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Scan screen: handles (1) links tapped elsewhere on the phone that the user
+             opens with ShieldX, and (2) text/links shared to ShieldX via the Share sheet -->
+        <activity
+            android:name=".ScanActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ShieldX.Dialog"
+            android:launchMode="singleTop"
+            android:excludeFromRecents="true">
+
+            <!-- #5: appears in the "Open with" chooser for any http/https link tapped
+                 anywhere on the device (WhatsApp, SMS, Gmail, other apps) -->
+            <intent-filter android:label="@string/app_name">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+            </intent-filter>
+
+            <!-- #2: appears in the system Share sheet ("Share to ShieldX") for any
+                 selected/shared text - e.g. a suspicious message copied from WhatsApp -->
+            <intent-filter android:label="@string/app_name_share">
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+
+            <!-- Lets the user long-press selected text anywhere and pick
+                 "ShieldX: Scan this text" from the text-selection menu -->
+            <intent-filter android:label="@string/app_name_scan_selection">
+                <action android:name="android.intent.action.PROCESS_TEXT" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+
+        </activity>
+
+        <!-- Live camera QR scanning (CameraX + ML Kit) -->
+        <activity
+            android:name=".QrCameraActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ShieldX"
+            android:screenOrientation="portrait" />
+    </application>
+</manifest>

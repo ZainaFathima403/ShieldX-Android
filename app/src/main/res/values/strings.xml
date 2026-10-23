@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">ShieldX</string>
+    <string name="app_name_share">Scan with ShieldX</string>
+    <string name="app_name_scan_selection">ShieldX: Scan this text</string>
+</resources>
